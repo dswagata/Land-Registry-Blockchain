@@ -9,3 +9,8 @@ This project allows users to register land, transfer ownership, and verify land 
 ✅ Transfer land ownership with blockchain verification.
 ✅ Fetch land details instantly.
 ✅ Decentralized and tamper-proof record system.
+
+🛠 Tech Stack
+Blockchain: Ethereum, Solidity, Web3.js, Truffle, Ganache
+Backend: Python, Web3.py
+Frontend: Streamlit
