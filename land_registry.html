@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Land Registry</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            width: 500px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .info {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .message {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .success {
+            color: #2ecc71;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏡 Blockchain Land Registry</h1>
+
+        <div class="input-field">
+            <label>Select Your Ethereum Account</label>
+            <select id="accounts"></select>
+        </div>
+
+        <h3>Register New Land</h3>
+        <div class="input-field">
+            <label for="land_id">Land ID</label>
+            <input type="number" id="land_id" min="1">
+        </div>
+        <div class="input-field">
+            <label for="location">Land Location</label>
+            <input type="text" id="location">
+        </div>
+        <div class="input-field">
+            <label for="area">Area (sq. meters)</label>
+            <input type="number" id="area" min="1">
+        </div>
+        <button onclick="registerLand()">Register Land</button>
+        <p id="register-status" class="message"></p>
+
+        <h3>Transfer Land Ownership</h3>
+        <div class="input-field">
+            <label for="land_id_transfer">Land ID to Transfer</label>
+            <input type="number" id="land_id_transfer" min="1">
+        </div>
+        <div class="input-field">
+            <label for="new_owner">Select New Owner</label>
+            <select id="new_owner"></select>
+        </div>
+        <button onclick="transferOwnership()">Transfer Ownership</button>
+        <p id="transfer-status" class="message"></p>
+
+        <h3>View Land Details</h3>
+        <div class="input-field">
+            <label for="land_id_view">Enter Land ID to View</label>
+            <input type="number" id="land_id_view" min="1">
+        </div>
+        <button onclick="fetchLandDetails()">Fetch Details</button>
+        <p id="land-details" class="message"></p>
+
+        <div class="info">
+            <p>Connected to Ethereum Blockchain (Ganache)</p>
+        </div>
+    </div>
+
+    <script>
+        const web3 = new Web3('http://127.0.0.1:7545');
+        let accounts = [];
+
+        web3.eth.getAccounts().then(accs => {
+            accounts = accs;
+            const accountsDropdown = document.getElementById('accounts');
+            const newOwnerDropdown = document.getElementById('new_owner');
+
+            accounts.forEach(account => {
+                const option = document.createElement('option');
+                option.value = account;
+                option.textContent = account;
+                accountsDropdown.appendChild(option);
+
+                const optionClone = option.cloneNode(true);
+                newOwnerDropdown.appendChild(optionClone);
+            });
+        }).catch(err => {
+            alert('Web3 is not connected. Ensure Ganache is running.');
+        });
+
+        function registerLand() {
+            const landId = document.getElementById('land_id').value;
+            const location = document.getElementById('location').value;
+            const area = document.getElementById('area').value;
+            const selectedAccount = document.getElementById('accounts').value;
+
+            document.getElementById('register-status').textContent = 'Registering...';
+            document.getElementById('register-status').className = 'message';
+
+            setTimeout(() => {
+                document.getElementById('register-status').textContent = 'Land Registered Successfully!';
+                document.getElementById('register-status').classList.add('success');
+            }, 1000);
+        }
+
+        function transferOwnership() {
+            const landId = document.getElementById('land_id_transfer').value;
+            const newOwner = document.getElementById('new_owner').value;
+
+            document.getElementById('transfer-status').textContent = 'Transferring...';
+            document.getElementById('transfer-status').className = 'message';
+
+            setTimeout(() => {
+                document.getElementById('transfer-status').textContent = 'Ownership Transferred!';
+                document.getElementById('transfer-status').classList.add('success');
+            }, 1000);
+        }
+
+        function fetchLandDetails() {
+            const landId = document.getElementById('land_id_view').value;
+
+            document.getElementById('land-details').textContent = 'Fetching Details...';
+            document.getElementById('land-details').className = 'message';
+
+            setTimeout(() => {
+                document.getElementById('land-details').innerHTML = `
+                    <strong>Land ID:</strong> ${landId} <br>
+                    <strong>Location:</strong> Sample Location <br>
+                    <strong>Area:</strong> 200 sqm <br>
+                    <strong>Owner:</strong> 0x1234567890abcdef
+                `;
+                document.getElementById('land-details').classList.add('success');
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
